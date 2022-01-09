@@ -109,12 +109,13 @@ def ping():
     return True if "pong" in response.text else False
 
 
-def is_registered(address: str) -> bool:
+def is_registered(address: str, verbose: bool = False) -> bool:
     """
     It returns True if the given address is registered. It returns False if it is not registered.
 
     Args:
         address: The address which registration you want to check.
+        verbose: True if you want to get the error prints, False if you don't.
 
     Returns:
         A bool. True if the given address is registered, False if it is not registered.
@@ -122,7 +123,8 @@ def is_registered(address: str) -> bool:
     """
     response_dict = json.loads(requests.get("{}/profiles/{}".format(BASE_URL, address)).text)
     if "error" in response_dict:
-        print("Error: {}".format(response_dict["error"]))
+        if verbose:
+            print("Error: {}".format(response_dict["error"]))
         return False
     else:
         return response_dict["registered"]
@@ -170,7 +172,7 @@ def get_human_received_vouches(address: str) -> list:
     return json.loads(requests.get("{}/profiles/{}/vouches".format(BASE_URL, address)).text)["received"]
 
 
-def create_human(address: str, verbose: bool = True):
+def create_human(address: str, verbose: bool = False):
     """
     It returns an instanciated object of class Human() based on the given address.
 
@@ -191,21 +193,23 @@ def create_human(address: str, verbose: bool = True):
 
 
 class Human:
-    def __init__(self, address: str):
+    def __init__(self, address: str, verbose: bool = False):
         """
         Initializes the Human.
 
         Args:
             address: The address of the human to instanciate.
+            verbose: Bool to specify if you want to see all the prints.
 
         """
         response_dict = json.loads(requests.get("{}/profiles/{}".format(BASE_URL, address)).text)
         self.address = address
         if "error" in response_dict:
-            print("Error with address {}".format(self.address))
-            print(response_dict["error"])
+            if verbose:
+                print("Error with address {}".format(self.address))
+                print(response_dict["error"])
+                print("Creating a mocking class")
             self.registered = False
-            print("Creating a mocking class")
         else:
             self.status = response_dict["status"]
             self.status = response_dict["status"]
