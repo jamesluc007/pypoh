@@ -94,7 +94,7 @@ def get_list_of_humans(amount: int = 100, order_by: str = "registered_time", ord
         A list of humans (list of Human())
 
     """
-    return [Human(i["eth_address"]) for i in get_raw_list_of_humans(amount, order_by, order_direction, include_unregistered)]
+    return [Human(address=i["eth_address"], check_existance=False) for i in get_raw_list_of_humans(amount, order_by, order_direction, include_unregistered)]
 
 
 def ping():
@@ -189,27 +189,43 @@ def create_human(address: str, verbose: bool = False):
             print("This address is not registered.")
         return None
     else:
-        return Human(address)
+        return Human(address=address, check_existance=False)
 
 
 class Human:
-    def __init__(self, address: str, verbose: bool = False):
+    def __init__(self, address: str, check_existance: bool = True, verbose: bool = False):
         """
         Initializes the Human.
 
         Args:
             address: The address of the human to instanciate.
+            check_existance: Bool to specify if you want to check if this address is registered before intanciating the object.
             verbose: Bool to specify if you want to see all the prints.
 
         """
         response_dict = json.loads(requests.get("{}/profiles/{}".format(BASE_URL, address)).text)
         self.address = address
-        if "error" in response_dict:
-            if verbose:
-                print("Error with address {}".format(self.address))
-                print(response_dict["error"])
-                print("Creating a mocking class")
-            self.registered = False
+        if check_existance:
+            if "error" in response_dict:
+                if verbose:
+                    print("Error with address {}".format(self.address))
+                    print(response_dict["error"])
+                    print("Creating a mocking class")
+                self.registered = False
+            else:
+                self.status = response_dict["status"]
+                self.status = response_dict["status"]
+                self.vanity_id = ""
+                self.display_name = response_dict["display_name"]
+                self.first_name = response_dict["first_name"]
+                self.last_name = response_dict["last_name"]
+                self.registered = response_dict["registered"]
+                self.photo = response_dict["photo"]
+                self.video = response_dict["video"]
+                self.bio = response_dict["bio"]
+                self.profile = response_dict["profile"]
+                self.registered_time = response_dict["registered_time"]
+                self.creation_time = response_dict["creation_time"]
         else:
             self.status = response_dict["status"]
             self.status = response_dict["status"]
