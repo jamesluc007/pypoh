@@ -3,13 +3,13 @@ from distutils.core import setup
 setup(
     name="pypoh",
     packages=["pypoh"],
-    version="0.1",
+    version="0.101",
     license="MIT",
     description="A Python Wrapper for the Proof of Humanity Rest API",
     author="Luciano Bruna",
     author_email="lucianobruna007@gmail.com",
     url="https://github.com/jamesluc007",
-    download_url="https://github.com/jamesluc007/pypoh/archive/refs/tags/v_01.tar.gz",
+    download_url="https://github.com/jamesluc007/pypoh/archive/refs/tags/v_0101.tar.gz",
     keywords=["PROOF", "HUMANITY", "ETHEREUM", "BLOCKCHAIN"],
     install_requires=[
         "requests",
