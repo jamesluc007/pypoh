@@ -13,7 +13,6 @@ setup(
     keywords=["PROOF", "HUMANITY", "ETHEREUM", "BLOCKCHAIN"],
     install_requires=[
         "requests",
-        "json",
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",
