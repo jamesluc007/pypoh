@@ -1,15 +1,20 @@
 from distutils.core import setup
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 setup(
     name="pypoh",
     packages=["pypoh"],
-    version="0.101",
+    version="0.102",
     license="MIT",
     description="A Python Wrapper for the Proof of Humanity Rest API",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author="Luciano Bruna",
     author_email="lucianobruna007@gmail.com",
     url="https://github.com/jamesluc007",
-    download_url="https://github.com/jamesluc007/pypoh/archive/refs/tags/v_0101.tar.gz",
+    download_url="https://github.com/jamesluc007/pypoh/archive/refs/tags/v_0102.tar.gz",
     keywords=["PROOF", "HUMANITY", "ETHEREUM", "BLOCKCHAIN"],
     install_requires=[
         "requests",
