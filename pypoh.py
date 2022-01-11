@@ -2,7 +2,7 @@
 import requests
 import json
 
-BASE_URL = "https://api-kovan.poh.dev"
+_BASE_URL = "https://api-kovan.poh.dev"
 
 
 def _profiles_api(amount: int, order_by: str, order_direction: str, include_unregistered: bool, start_cursor: str) -> dict:
@@ -23,7 +23,7 @@ def _profiles_api(amount: int, order_by: str, order_direction: str, include_unre
     include_unregistered_str = "true" if include_unregistered else "false"
     start_cursor_str = "&start_cursor={}".format(start_cursor) if start_cursor is not None else ""
     response_dict = json.loads(
-        requests.get("{}/profiles?order_by={}&order_direction={}&include_unregistered={}{}".format(BASE_URL, order_by, order_direction, include_unregistered_str, start_cursor_str)).text
+        requests.get("{}/profiles?order_by={}&order_direction={}&include_unregistered={}{}".format(_BASE_URL, order_by, order_direction, include_unregistered_str, start_cursor_str)).text
     )
     return response_dict
 
@@ -105,7 +105,7 @@ def ping():
         A bool (True if there is ping, False if there is not)
 
     """
-    response = requests.get("{}/ping".format(BASE_URL))
+    response = requests.get("{}/ping".format(_BASE_URL))
     return True if "pong" in response.text else False
 
 
@@ -121,7 +121,7 @@ def is_registered(address: str, verbose: bool = False) -> bool:
         A bool. True if the given address is registered, False if it is not registered.
 
     """
-    response_dict = json.loads(requests.get("{}/profiles/{}".format(BASE_URL, address)).text)
+    response_dict = json.loads(requests.get("{}/profiles/{}".format(_BASE_URL, address)).text)
     if "error" in response_dict:
         if verbose:
             print("Error: {}".format(response_dict["error"]))
@@ -141,7 +141,7 @@ def get_human_status_history(address: str) -> list:
         A list of dicts with this human history.
 
     """
-    return json.loads(requests.get("{}/profiles/{}/status-history".format(BASE_URL, address)).text)
+    return json.loads(requests.get("{}/profiles/{}/status-history".format(_BASE_URL, address)).text)
 
 
 def get_human_given_vouches(address: str) -> list:
@@ -155,7 +155,7 @@ def get_human_given_vouches(address: str) -> list:
         A list of dicts with this human given vouches.
 
     """
-    return json.loads(requests.get("{}/profiles/{}/vouches".format(BASE_URL, address)).text)["given"]
+    return json.loads(requests.get("{}/profiles/{}/vouches".format(_BASE_URL, address)).text)["given"]
 
 
 def get_human_received_vouches(address: str) -> list:
@@ -169,7 +169,7 @@ def get_human_received_vouches(address: str) -> list:
         A list of dicts with this human received vouches.
 
     """
-    return json.loads(requests.get("{}/profiles/{}/vouches".format(BASE_URL, address)).text)["received"]
+    return json.loads(requests.get("{}/profiles/{}/vouches".format(_BASE_URL, address)).text)["received"]
 
 
 def create_human(address: str, verbose: bool = False):
@@ -184,7 +184,7 @@ def create_human(address: str, verbose: bool = False):
         An object of class Human() or None if there was error preventing the instanciation.
 
     """
-    if "error" in json.loads(requests.get("{}/profiles/{}".format(BASE_URL, address)).text):
+    if "error" in json.loads(requests.get("{}/profiles/{}".format(_BASE_URL, address)).text):
         if verbose:
             print("This address is not registered.")
         return None
@@ -203,7 +203,7 @@ class Human:
             verbose: Bool to specify if you want to see all the prints.
 
         """
-        response_dict = json.loads(requests.get("{}/profiles/{}".format(BASE_URL, address)).text)
+        response_dict = json.loads(requests.get("{}/profiles/{}".format(_BASE_URL, address)).text)
         self.address = address
         if check_existance:
             if "error" in response_dict:
@@ -255,7 +255,7 @@ class Human:
             A list of dicts with this human history.
 
         """
-        return json.loads(requests.get("{}/profiles/{}/status-history".format(BASE_URL, self.address)).text)
+        return json.loads(requests.get("{}/profiles/{}/status-history".format(_BASE_URL, self.address)).text)
 
     def get_given_vouches(self) -> list:
         """
@@ -265,7 +265,7 @@ class Human:
             A list of dicts with this human given vouches.
 
         """
-        return json.loads(requests.get("{}/profiles/{}/vouches".format(BASE_URL, self.address)).text)["given"]
+        return json.loads(requests.get("{}/profiles/{}/vouches".format(_BASE_URL, self.address)).text)["given"]
 
     def get_received_vouches(self) -> list:
         """
@@ -275,4 +275,4 @@ class Human:
             A list of dicts with this human received vouches.
 
         """
-        return json.loads(requests.get("{}/profiles/{}/vouches".format(BASE_URL, self.address)).text)["received"]
+        return json.loads(requests.get("{}/profiles/{}/vouches".format(_BASE_URL, self.address)).text)["received"]
