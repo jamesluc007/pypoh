@@ -2,10 +2,12 @@
 import requests
 import json
 
-_BASE_URL = "https://api-kovan.poh.dev"
+_BASE_URL = "https://api.poh.dev"
 
 
-def _profiles_api(amount: int, order_by: str, order_direction: str, include_unregistered: bool, start_cursor: str) -> dict:
+def _profiles_api(
+    amount: int, order_by: str, order_direction: str, include_unregistered: bool, start_cursor: str
+) -> dict:
     """
     Internal method. It simply calls the profiles API. It was created to avoid code repetition.
 
@@ -23,12 +25,21 @@ def _profiles_api(amount: int, order_by: str, order_direction: str, include_unre
     include_unregistered_str = "true" if include_unregistered else "false"
     start_cursor_str = "&start_cursor={}".format(start_cursor) if start_cursor is not None else ""
     response_dict = json.loads(
-        requests.get("{}/profiles?order_by={}&order_direction={}&include_unregistered={}{}".format(_BASE_URL, order_by, order_direction, include_unregistered_str, start_cursor_str)).text
+        requests.get(
+            "{}/profiles?order_by={}&order_direction={}&include_unregistered={}{}".format(
+                _BASE_URL, order_by, order_direction, include_unregistered_str, start_cursor_str
+            )
+        ).text
     )
     return response_dict
 
 
-def get_raw_list_of_humans(amount: int = 100, order_by: str = "registered_time", order_direction: str = "desc", include_unregistered: str = False) -> list:
+def get_raw_list_of_humans(
+    amount: int = 100,
+    order_by: str = "registered_time",
+    order_direction: str = "desc",
+    include_unregistered: str = False,
+) -> list:
     """
     It returns a list of dicts with each human information.
 
@@ -53,7 +64,12 @@ def get_raw_list_of_humans(amount: int = 100, order_by: str = "registered_time",
     return ultimate_list
 
 
-def get_raw_set_of_addresses(amount: int = 100, order_by: str = "registered_time", order_direction: str = "desc", include_unregistered: bool = False) -> set:
+def get_raw_set_of_addresses(
+    amount: int = 100,
+    order_by: str = "registered_time",
+    order_direction: str = "desc",
+    include_unregistered: bool = False,
+) -> set:
     """
     It returns a set with all the addresses. This might be a bit quicker than calling the get_raw_list_of_humans method.
     The number of returned humans will always be a multiple of 100 for this specific method.
@@ -80,7 +96,12 @@ def get_raw_set_of_addresses(amount: int = 100, order_by: str = "registered_time
     return ultimate_set
 
 
-def get_list_of_humans(amount: int = 100, order_by: str = "registered_time", order_direction: str = "desc", include_unregistered: bool = False) -> list:
+def get_list_of_humans(
+    amount: int = 100,
+    order_by: str = "registered_time",
+    order_direction: str = "desc",
+    include_unregistered: bool = False,
+) -> list:
     """
     It returns a list with objects of class Human(). Warning: This method is slow. I recomment to specify a number of amount < 30.
 
@@ -94,7 +115,10 @@ def get_list_of_humans(amount: int = 100, order_by: str = "registered_time", ord
         A list of humans (list of Human())
 
     """
-    return [Human(address=i["eth_address"], check_existance=False) for i in get_raw_list_of_humans(amount, order_by, order_direction, include_unregistered)]
+    return [
+        Human(address=i["eth_address"], check_existance=False)
+        for i in get_raw_list_of_humans(amount, order_by, order_direction, include_unregistered)
+    ]
 
 
 def ping():
@@ -214,7 +238,6 @@ class Human:
                 self.registered = False
             else:
                 self.status = response_dict["status"]
-                self.status = response_dict["status"]
                 self.vanity_id = ""
                 self.display_name = response_dict["display_name"]
                 self.first_name = response_dict["first_name"]
@@ -276,3 +299,31 @@ class Human:
 
         """
         return json.loads(requests.get("{}/profiles/{}/vouches".format(_BASE_URL, self.address)).text)["received"]
+
+    def todict(self) -> dict:
+        """
+        It returns a dict with all the data of this human.
+
+        Returns:
+            A dict with all this human data.
+
+        """
+        if self.is_registered:
+            return {
+                "is_registered": True,
+                "status": self.status,
+                "display_name": self.display_name,
+                "first_name": self.first_name,
+                "last_name": self.last_name,
+                "registered": self.registered,
+                "photo": self.photo,
+                "video": self.video,
+                "bio": self.bio,
+                "bio": self.profile,
+                "registered_time": self.registered_time,
+                "creation_time": self.creation_time,
+            }
+        else:
+            return {
+                "is_registered": False,
+            }
